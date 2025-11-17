@@ -1,0 +1,11 @@
+{
+    "IDAMetadataDescriptorVersion": 1,
+    "plugin": {
+        "name": "tenet",
+        "entryPoint": "tenet_plugin",
+        "categories": ["decompilation", "deobfuscation", "malware-analysis"],
+        "idaVersions": ">=9.0",
+        "description": "A trace explorer for reverse engineers",
+        "version": "0.4.0"
+    }
+}
