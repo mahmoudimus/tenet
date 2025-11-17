@@ -3,9 +3,16 @@ import time
 
 from .shim import *
 
-#------------------------------------------------------------------------------
+try:
+    from PySide6.QtGui import QClipboard
+except ImportError:
+    from PyQt5.QtGui import QClipboard
+
+
+# ------------------------------------------------------------------------------
 # Qt Fonts
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
 
 def MonospaceFont():
     """
@@ -15,17 +22,20 @@ def MonospaceFont():
     font.setStyleHint(QtGui.QFont.TypeWriter)
     return font
 
-#------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 # Qt Util
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
 
 def copy_to_clipboard(data):
     """
     Copy the given data (a string) to the system clipboard.
     """
     cb = QtWidgets.QApplication.clipboard()
-    cb.clear(mode=cb.Clipboard)
-    cb.setText(data, mode=cb.Clipboard)
+    cb.clear(mode=QClipboard.Clipboard)
+    cb.setText(data, mode=QClipboard.Clipboard)
+
 
 def flush_qt_events():
     """
@@ -33,6 +43,7 @@ def flush_qt_events():
     """
     app = QtCore.QCoreApplication.instance()
     app.processEvents()
+
 
 def focus_window():
     """
@@ -43,6 +54,7 @@ def focus_window():
     mb.setStandardButtons(QtWidgets.QMessageBox.Ok)
     button = mb.button(QtWidgets.QMessageBox.Ok)
     mb.exec_()
+
 
 def get_dpi_scale():
     """
@@ -55,13 +67,15 @@ def get_dpi_scale():
     # xHeight is expected to be 40.0 at normal DPI
     return fm.height() / 173.0
 
+
 def normalize_font(font_size):
     """
     Normalize the given font size based on the system DPI.
     """
-    if sys.platform == "darwin": # macos is lame
+    if sys.platform == "darwin":  # macos is lame
         return font_size + 2
     return font_size
+
 
 def get_qmainwindow():
     """
@@ -69,6 +83,7 @@ def get_qmainwindow():
     """
     app = QtWidgets.QApplication.instance()
     return [x for x in app.allWidgets() if x.__class__ is QtWidgets.QMainWindow][0]
+
 
 def compute_color_on_gradient(percent, color1, color2):
     """
@@ -83,4 +98,4 @@ def compute_color_on_gradient(percent, color1, color2):
     b = b1 + percent * (b2 - b1)
 
     # return the new color
-    return QtGui.QColor(r,g,b)
+    return QtGui.QColor(r, g, b)

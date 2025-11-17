@@ -1,20 +1,20 @@
-import os
 import json
-import shutil
 import logging
-
+import os
+import shutil
 from json.decoder import JSONDecodeError
 
-from tenet.util.qt import *
-from tenet.util.misc import *
-from tenet.util.log import pmsg
 from tenet.integration.api import disassembler
+from tenet.util.log import pmsg
+from tenet.util.misc import *
+from tenet.util.qt import *
 
 logger = logging.getLogger("Plugin.UI.Palette")
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Plugin Color Palette
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+
 
 class PluginPalette(object):
     """
@@ -34,11 +34,7 @@ class PluginPalette(object):
         self._user_disassembly_hint = "dark"
 
         self.theme = None
-        self._default_themes = \
-        {
-            "dark":  "synth.json",
-            "light": "horizon.json"
-        }
+        self._default_themes = {"dark": "synth.json", "light": "horizon.json"}
 
         # list of objects requesting a callback after a theme change
         self._theme_changed_callbacks = []
@@ -66,14 +62,13 @@ class PluginPalette(object):
         Return the user theme directory.
         """
         theme_directory = os.path.join(
-            disassembler.get_disassembler_user_directory(),
-            "tenet_themes"
+            disassembler.get_disassembler_user_directory(), "tenet_themes"
         )
         return theme_directory
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Callbacks
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
 
     def theme_changed(self, callback):
         """
@@ -87,9 +82,9 @@ class PluginPalette(object):
         """
         notify_callback(self._theme_changed_callbacks)
 
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
     # Public
-    #----------------------------------------------------------------------
+    # ----------------------------------------------------------------------
 
     def warmup(self):
         """
@@ -125,10 +120,7 @@ class PluginPalette(object):
 
         # create & configure a Qt File Dialog for immediate use
         file_dialog = QtWidgets.QFileDialog(
-            None,
-            "Open plugin theme file",
-            self._last_directory,
-            "JSON Files (*.json)"
+            None, "Open plugin theme file", self._last_directory, "JSON Files (*.json)"
         )
         file_dialog.setFileMode(QtWidgets.QFileDialog.ExistingFile)
 
@@ -145,7 +137,10 @@ class PluginPalette(object):
         file_dir = os.path.abspath(os.path.dirname(filename))
         user_dir = os.path.abspath(self.get_user_theme_dir())
         if file_dir != user_dir:
-            text = "Please install your plugin theme into the user theme directory:\n\n" + user_dir
+            text = (
+                "Please install your plugin theme into the user theme directory:\n\n"
+                + user_dir
+            )
             disassembler.warning(text)
             return
 
@@ -228,9 +223,9 @@ class PluginPalette(object):
 
         return ba.data()
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     # Theme Internals
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
 
     def _populate_user_theme_dir(self):
         """
@@ -272,7 +267,9 @@ class PluginPalette(object):
         logger.debug("Loading required theme fields from disk...")
 
         # load a known-good theme from the plugin's in-box themes
-        filepath = os.path.join(self.get_plugin_theme_dir(), self._default_themes["dark"])
+        filepath = os.path.join(
+            self.get_plugin_theme_dir(), self._default_themes["dark"]
+        )
         theme = self._read_theme(filepath)
 
         #
@@ -475,9 +472,9 @@ class PluginPalette(object):
 
         return light
 
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     # Theme Inference
-    #--------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
 
     def _refresh_theme_hints(self):
         """
@@ -545,7 +542,9 @@ class PluginPalette(object):
         if disassembler.NAME == "BINJA":
             test_widget.setAttribute(QtCore.Qt.WA_DontShowOnScreen)
         else:
-            test_widget.setAttribute(103) # taken from http://doc.qt.io/qt-5/qt.html
+            test_widget.setAttribute(
+                QtCore.Qt.WidgetAttribute.WA_StyledBackground
+            )  # taken from http://doc.qt.io/qt-5/qt.html
 
         # render the (invisible) widget
         test_widget.show()
@@ -560,15 +559,17 @@ class PluginPalette(object):
         # return 'dark' or 'light'
         return test_color_brightness(bg_color)
 
-#-----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
 # Palette Util
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+
 
 def test_color_brightness(color):
     """
     Test the brightness of a color.
     """
-    if color.lightness() > 255.0/2:
+    if color.lightness() > 255.0 / 2:
         return "light"
     else:
         return "dark"
