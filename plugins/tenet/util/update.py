@@ -1,17 +1,17 @@
-import re
 import json
 import logging
+import re
 import threading
-
 from urllib.request import urlopen
 
 logger = logging.getLogger("Tenet.Util.Update")
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Update Checking
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 UPDATE_URL = "https://api.github.com/repos/gaasedelen/tenet/releases/latest"
+
 
 def check_for_update(current_version, callback):
     """
@@ -19,10 +19,14 @@ def check_for_update(current_version, callback):
     """
     update_thread = threading.Thread(
         target=async_update_check,
-        args=(current_version, callback,),
-        name="UpdateChecker"
+        args=(
+            current_version,
+            callback,
+        ),
+        name="UpdateChecker",
     )
     update_thread.start()
+
 
 def async_update_check(current_version, callback):
     """
@@ -40,8 +44,8 @@ def async_update_check(current_version, callback):
         return
 
     # convert vesrion #'s to integer for easy compare...
-    version_remote = int(''.join(re.findall('\d+', remote_version)))
-    version_local = int(''.join(re.findall('\d+', current_version)))
+    version_remote = int("".join(re.findall(r"\d+", remote_version)))
+    version_local = int("".join(re.findall(r"\d+", current_version)))
 
     # no updates available...
     logger.debug(" - Local: 'v%s' vs Remote: '%s'" % (current_version, remote_version))
@@ -50,10 +54,11 @@ def async_update_check(current_version, callback):
         return
 
     # notify the user if an update is available
-    update_message = "An update is available for Tenet!\n\n" \
-                     " -  Latest Version: %s\n" % (remote_version) + \
-                    " - Current Version: v%s\n\n" % (current_version) + \
-                    "Please go download the update from GitHub."
+    update_message = (
+        "An update is available for Tenet!\n\n"
+        " -  Latest Version: %s\n" % (remote_version)
+        + " - Current Version: v%s\n\n" % (current_version)
+        + "Please go download the update from GitHub."
+    )
 
     callback(update_message)
-
